@@ -1,0 +1,3 @@
+[submodule "spack-dt-geo"]
+	path = spack-dt-geo
+	url = git@github.com:valemagni/spack-compss.git
