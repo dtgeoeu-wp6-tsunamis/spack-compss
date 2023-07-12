@@ -1,94 +1,73 @@
-# Run the PTF on Galileo with Spack+COMPSs
-## Create the spack environment
+# Creating a Spack environment with COMPSs and py-pip on Galileo
+This repo provides the files needed for running COMPSs on Galileo using Spack.
+- spackenv: directory with the .yaml file used to create the Spack environment.
+- spack-dt-geo: directory with the compss package that will be installed by Spack.
+- g100.cfg and slurm.cfg: configurations files that COMPSs will use to submit jobs. These files are specific for Galileo.
+- run_compss.sh: example script to submit a job to the queue.
 
+
+## Create the spack environment
 Load the spack module:
 ```
 module load spack
 ```   
 
-Copy the spackptf folder from /g100_work/DTGEO_T1 to your home directory (or wherever you prefer). Then create the spack environment:
+Clone the repo and create the spack environment:
 ```
-cp -r /g100_work/DTGEO_T1/spack_and_compss/spackptf ~/
-cd spackptf
+git clone git@github.com:dtgeoeu-wp6-tsunamis/spack-compss-galileo.git
+cd spack-compss-galileo/spackenv
 spack env create -d .
 ```
-Activate the environment (-p flag is to visualize that the environment is active):
+Activate the environment (the -p flag is to visualize that the environment is active).   
 ```
-spack env activate -p /fullpath/spackptf
+spack env activate -p .
 ```
-The first time, you need to add our spack folder (with compss) to the repo and install the packages specified in the spack.yaml file:
+
+The first time, you need to tell Spack where to find the compss package. This is done by adding a new spack repo.
 ```
-spack repo add /g100_work/DTGEO_T1/spack_and_compss/spack/var/spack/repos/builtin
+spack repo add /<FULLPATH-TO-REPOSITORY-ROOT>/spack-compss-galileo/spack-dt-geo/var/spack/repos/builtin
+```
+Then you can install the packages specified in the spack.yaml file:
+```
 spack concretize
 spack -d install
 ```
-Now you should have an environment with compss, py-pip, and geos installed. Geos is needed for the python package cartopy. Py-pip is needed to install all the python packages used by the PTF.   
+Now you should have an environment with compss and py-pip installed.    
 
 You can do `spack find` to see which packages are now installed in the environment.
-To see if the installation of compss worked you can do `runcompss --version`, but the first time you do this you might need to deactivate the environment and activate it again. If the command runcompss is not known, then something went wrong with the installation.   
+To see if the installation of compss worked you can do `runcompss --version`, but the first time you do this you might need to deactivate the environment (`spack env deactivate`) and activate it again. If the command runcompss is not known, then something went wrong with the installation.   
 
-### Useful spack commands
-`spack find`           To see what packages are installed in the environment.   
-`spack env deactivate`    To deactivate the environment.   
-`spack list packagename`  To see available packages that contain "packagename" on spack.   
-`spack add packagename`    To add a new package (then you need to do `spack concretize` and `spack install` again). You can also specify which version to use adding @x.x.x after the package name.   
-`spack info packagename`  To see which versions of a specific package are available.   
-`spack find --paths`   To see where packages are installed within the spack environment.         
-<p> </p>
-
-## Add python packages used in the PTF
-Clone the PTF repository and go the the pycompss branch:
+## Installing Python packages in the environment
+You can use py-pip to install the python packages you need. Note that Spack already have many python packages available, but not all of them are included. Therefore, to be consistent, we have installed py-pip so that we can install the python packages with pip install. And because in the .yaml file has the flag `concretization: together`, we are sure that COMPSs and pip will use the same python version.
+With the **spack environment active**, you can install any python packages with pip:
 ```
-git clone git@gitlab.rm.ingv.it:dt-geo/tsunami-digital-twin.git
-cd tsunami-digital-twin
-git checkout pycompss_ptf_tests
+pip install name_of_python_package
+```
+Or, if you have a requirements.txt file with a list of packages to install, you can do:
+```
+pip install -r requirements.txt
 ```
 
-With the **spack environment active**, install python packages with pip:
+If your python script needs to import local modules, then you need to that directory to the variable PYTHONPATH so that COMPSs knows where to look. For instance, if you have a folder /mycode/py/ with some routines that the main script needs to use, you need to add (make sure you write the full paths)
 ```
-pip install -r requirements_2.txt --no-binary shapely
+export PYTHONPATH=$PYTHONPATH:/mycode:/mycode/py
 ```
 
-Add the tsunami-digital-twin and directories within to the PYTHONPATH (change "fullpath"):
-```
-export PYTHONPATH=$PYTHONPATH:/fullpath/tsunami-digital-twin:/fullpath/tsunami-digital-twin/py:/fullpath/tsunami-digital-twin/docker_files
-```
-<p> </p>
 
 ## Configure COMPSs for Galileo
-We need to tell COMPSs which submission scripts to use that are specific for Galileo. This is defined by the two files g100.cfg and slurm.cfg, which we need to copy in the COMPSs folders:
+Now we need to tell COMPSs which submission scripts to use that are specific for Galileo. This is defined by the two files g100.cfg and slurm.cfg, which we need to copy in the COMPSs folders of our Spack environment:
 ```
-cp g100_work/DTGEO_T1/spack_and_compss/g100.cfg /fullpath/spackptf/.spack-env/view/compss/Runtime/scripts/queues/supercomputers/default.cfg   
-cp g100_work/DTGEO_T1/spack_and_compss/slurm.cfg /fullpath/spackptf/.spack-env/view/compss/Runtime/scripts/queues/queue_systems/
+cp g100.cfg /<FULLPATH-TO-REPOSITORY-ROOT>/spack-compss-galileo/spackenv/.spack-env/view/compss/Runtime/scripts/queues/supercomputers/default.cfg   
+cp slurm.cfg /<FULLPATH-TO-REPOSITORY-ROOT>/spack-compss-galileo/spackenv/.spack-env/view/compss/Runtime/scripts/queues/queue_systems/
 ```
 <p> </p>
 
-## Run the PTF on Galileo
-Follow the instructions in the README file of tsunami-digital-twin to set up the output directory, copy the workflow_input.json file in the output directory, and create the configuration file.   
+## Submit a job on Galileo with enqueue_compss
+   
+The file `run_compss.sh` is an example of how to submit a job on Galileo with enqueue_compss. It is important to give the python_interpreter and pythonpath flags to make sure that compss uses the version of python inside the spack environment and that it knows the PYTHONPATH.  
 
-Copy the template script to run the job from DTGEO_T1:
+Submit the job with the **spack environment active**:
 ```
-cp /g100_work/DTGEO_T1/spack_and_compss/run_compss_ptf.sh /fullpath/tsunami-digital-twin
+./run_compss.sh
 ```
    
-Change the paths inside run_compss_ptf.sh   
-
-Submit the job from the tsunami-digital-twin folder and with the **spack environment active**:
-```
-./run_compss_ptf.sh
-```
-   
- <p> </p>  
-
-# Troubleshooting
-### COMPSs installation fails
-This can be something related to the sha256. Check the log of the spack install command. If you ran it with the -d flag, you should be able to see an error that says that the sha256 has changed and it says which sha256 you should use now. If this is the case, you can copy that long combination of numbers and letters and paste it inside the file `/g100_work/DTGEO_T1/spack_and_compss/spack/var/spack/repos/builtin/packages/compss/package.py`. Then try `spack install` again.
- <p> </p>  
-
- ### Module not found when running the ptf with COMPSs
-This could be related to pyCOMPSs not knowing where to look for the python routines defined in the PTF. Make sure you set up the variable $PYTHONPATH correctly (see instructions above). 
-
-  <p> </p>  
-  
-  ### Problem with geos (cannot find libraries)
-  Even though geos is installed as a package in the spack environment, in some cases, it seems that python does not see it. Try `spack load geos` and run the PTF again.
