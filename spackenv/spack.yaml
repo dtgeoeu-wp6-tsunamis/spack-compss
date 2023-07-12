@@ -7,5 +7,3 @@ spack:
   specs: [compss, py-pip]
   view: true
   concretization: together
-  repos:
-  - <FULLPATH-TO-REPOSITORY-ROOT>/spack-compss-galileo/spack-dt-geo/var/spack/repos/builtin
