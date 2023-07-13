@@ -5,7 +5,6 @@ This repo provides the files needed for running COMPSs on Galileo using Spack.
 - g100.cfg and slurm.cfg: configurations files that COMPSs will use to submit jobs. These files are specific for Galileo.
 - run_compss.sh: example script to submit a job to the queue.
 
-
 ## Create the spack environment
 Load the spack module:
 ```
@@ -36,10 +35,11 @@ Now you should have an environment with compss and py-pip installed.
 
 You can do `spack find` to see which packages are now installed in the environment.
 To see if the installation of compss worked you can do `runcompss --version`, but the first time you do this you might need to deactivate the environment (`spack env deactivate`) and activate it again. If the command runcompss is not known, then something went wrong with the installation.   
+See [here](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/cheat-sheet/) for some useful spack commands.
 
 ## Installing Python packages in the environment
-You can use py-pip to install the python packages you need. Note that Spack already have many python packages available, but not all of them are included. Therefore, to be consistent, we have installed py-pip so that we can install the python packages with pip install. And because in the .yaml file has the flag `concretization: together`, we are sure that COMPSs and pip will use the same python version.
-With the **spack environment active**, you can install any python packages with pip:
+You can use py-pip to install the python packages you need. Note that Spack already has many python packages available, but not all of them are included. Therefore, to be consistent, we have installed py-pip so that we can install the python packages with the pip install command. And because in the .yaml file we put the flag `concretization: together`, we are sure that COMPSs and pip will use the same python version.
+With the **spack environment active**, you can install any python package with pip:
 ```
 pip install name_of_python_package
 ```
@@ -48,7 +48,7 @@ Or, if you have a requirements.txt file with a list of packages to install, you 
 pip install -r requirements.txt
 ```
 
-If your python script needs to import local modules, then you need to that directory to the variable PYTHONPATH so that COMPSs knows where to look. For instance, if you have a folder /mycode/py/ with some routines that the main script needs to use, you need to add (make sure you write the full paths)
+If your python script needs to import local modules, then you need to add that directory to the variable PYTHONPATH so that COMPSs knows where to look. For instance, if you have a folder /mycode/py/ with some routines that the main script needs to use, you need to change the PYTHONPATH to (make sure you write the full paths):
 ```
 export PYTHONPATH=$PYTHONPATH:/mycode:/mycode/py
 ```
@@ -70,4 +70,6 @@ Submit the job with the **spack environment active**:
 ```
 ./run_compss.sh
 ```
-   
+
+## Troubleshooting
+Check the [Troubleshooting page](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/troubleshooting/)
