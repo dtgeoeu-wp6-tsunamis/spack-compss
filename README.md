@@ -1,10 +1,14 @@
 # Creating a Spack environment with COMPSs and py-pip
 This repository provides the files needed for setting up a Spack environment with COMPSs and py-pip either locally or on HPC clusters.
-- spackenv: directory with the .yaml file used to create the Spack environment.
 - spack-dt-geo: directory with the compss package that will be installed by Spack.
 - galileo: directory with files specific for Galileo100:
+   - spackenv: directory with the .yaml file used to create the Spack environment - specific for spack version 0.17.1 on Galileo.
    - g100.cfg and slurm.cfg: configurations files that COMPSs will use to submit jobs.
    - run_compss_galileo.sh: example script to submit a job to the queue.
+- leonardo: directory with files specific for Leonardo:
+   - spackenv: directory with the .yaml file used to create the Spack environment - specific for spack version 0.19.1 on Leonardo.
+   - leonardo.cfg and slurm.cfg: configurations files that COMPSs will use to submit jobs.
+   - run_compss_leonardo.sh: example script to submit a job to the queue.
 - (TODO: mercalli)
 - (TODO: example of COMPSs script to run)
 
