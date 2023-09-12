@@ -9,5 +9,3 @@ spack:
   concretizer:
     reuse: false
     unify: true
-  repos:
-  - /leonardo/home/userexternal/vmagni00/spack-compss/spack-dt-geo/var/spack/repos/builtin
