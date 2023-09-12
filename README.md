@@ -10,6 +10,7 @@ This repository provides the files needed for setting up a Spack environment wit
 
 Depending on where you want to use Spack+COMPSs, instructions are slightly different. This is because Spack is installed as a module in CINECA clusters, but not in Mercalli or in your local machine. Here you can find instructions for each specific case:   
 - [Instructions for Galileo100](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/galileo/)
+- [Instructions for Leonardo](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/leonardo/)
 - [Instructions for Mercalli](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/mercalli/)
 - [Instructions for local machine](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/local/)
 
