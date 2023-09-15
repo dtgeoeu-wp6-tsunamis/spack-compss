@@ -18,7 +18,9 @@ Depending on where you want to use Spack+COMPSs, instructions are slightly diffe
 - [Instructions for Mercalli](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/mercalli/)
 - [Instructions for local machine](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/local/)
 
-
+## Source
+The COMPSs package for Spack and the configuration files are provided by WP2 in the repo [gitlab.com/dtgeo](https://gitlab.com/dtgeo).   
+[Here](https://gitlab.com/dtgeo/workflow-registry/-/tree/main/example_workflow/matmul?ref_type=heads), you can also find an example of a pycompss script that you can use for testing. 
 
 ## Troubleshooting
 Check the [Troubleshooting page](https://dtgeoeu-wp6-tsunamis.github.io/dt-geo-wp6-docs/spack-and-compss/troubleshooting/)
